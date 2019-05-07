@@ -4,7 +4,7 @@ class Messages extends Component {
   render() {
     return (
       <main className="messages">
-        {this.props.message.map(message => {
+        {this.props.messages.map(message => {
           return (
               <div className="message" key={message.id}>
                 <span className="message-username">{message.username}</span>
@@ -23,3 +23,5 @@ class Messages extends Component {
 }
 
 export default Messages
+
+
