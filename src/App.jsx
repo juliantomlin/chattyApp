@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Chatbar from './ChatBar.jsx'
 import Messages from './Message.jsx'
 
+
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -26,12 +28,30 @@ class App extends Component {
 
 
 
- onReturn(event) {
-    this.setState({messages: this.state.messages.concat({username: this.state.currentUser.name, content: event, id: this.state.messages[this.state.messages.length - 1].id + 1})})
+
+
+
+  onReturn(msg) {
+    // this.setState({messages: this.state.messages.concat({username: this.state.currentUser.name, content: msg, id: this.state.messages[this.state.messages.length - 1].id + 1})})
+    console.log(msg)
+    this.socket.send(JSON.stringify({username: this.state.currentUser.name, content: msg}))
   }
 
+// id: this.state.messages[this.state.messages.length - 1].id + 1
+
   componentDidMount() {
+    this.socket = new WebSocket("ws://localhost:8080");
     console.log("componentDidMount <App />");
+    this.socket.onopen = function() {
+      console.log('connection established')
+    }
+
+    const self = this;
+    this.socket.onmessage = function(msg) {
+     let incommingMsg = (JSON.parse(msg.data))
+     incommingMsg.id = self.state.messages[self.state.messages.length - 1].id + 1
+      self.setState({messages: self.state.messages.concat(incommingMsg)})
+    }
     setTimeout(() => {
       console.log("Simulating incoming message");
 
