@@ -24,6 +24,7 @@ class App extends Component {
                 }
 
   this.onReturn = this.onReturn.bind(this)
+  this.onReturnName = this.onReturnName.bind(this)
   }
 
 
@@ -33,8 +34,14 @@ class App extends Component {
 
   onReturn(msg) {
     // this.setState({messages: this.state.messages.concat({username: this.state.currentUser.name, content: msg, id: this.state.messages[this.state.messages.length - 1].id + 1})})
-    console.log('retrived message', msg)
-    this.socket.send(JSON.stringify({username: msg.name, content: msg.content}))
+    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content}))
+  }
+
+  onReturnName(name) {
+    if (name != this.state.currentUser.name){
+      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`}))
+      this.setState({currentUser: {name: name}})
+    }
   }
 
 // id: this.state.messages[this.state.messages.length - 1].id + 1
@@ -48,8 +55,8 @@ class App extends Component {
 
     const self = this;
     this.socket.onmessage = function(msg) {
-     let incommingMsg = (JSON.parse(msg.data))
-     incommingMsg.id = self.state.messages[self.state.messages.length - 1].id + 1
+      let incommingMsg = (JSON.parse(msg.data))
+      incommingMsg.id = self.state.messages[self.state.messages.length - 1].id + 1
       self.setState({messages: self.state.messages.concat(incommingMsg)})
     }
     setTimeout(() => {
@@ -68,8 +75,8 @@ class App extends Component {
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
-        <Messages messages={this.state.messages}/>
-        <Chatbar username={this.state.currentUser.name} submit={this.onReturn}/>
+        <Messages messages={this.state.messages} />
+        <Chatbar username={this.state.currentUser.name} submit={this.onReturn} submitName={this.onReturnName} />
       </div>
     );
   }
