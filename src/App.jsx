@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Chatbar from './ChatBar.jsx'
 import Messages from './Message.jsx'
-
+import Nav from './NavBar.jsx'
 
 
 class App extends Component {
@@ -9,13 +9,16 @@ class App extends Component {
     super(props)
     this.state = {
                   currentUser: {name: "Bob"},
+                  userNumber: 0,
                   messages: [
                     {
+                      type: 'message',
                       username: "Bob",
                       content: "Has anyone seen my marbles?",
                       id: 1,
                     },
                     {
+                      type: 'message',
                       username: "Anonymous",
                       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good.",
                       id: 2,
@@ -26,11 +29,6 @@ class App extends Component {
   this.onReturn = this.onReturn.bind(this)
   this.onReturnName = this.onReturnName.bind(this)
   }
-
-
-
-
-
 
   onReturn(msg) {
     // this.setState({messages: this.state.messages.concat({username: this.state.currentUser.name, content: msg, id: this.state.messages[this.state.messages.length - 1].id + 1})})
@@ -43,6 +41,7 @@ class App extends Component {
       this.setState({currentUser: {name: name}})
     }
   }
+
 
 // id: this.state.messages[this.state.messages.length - 1].id + 1
 
@@ -58,11 +57,13 @@ class App extends Component {
       let incommingMsg = (JSON.parse(msg.data))
       incommingMsg.id = self.state.messages[self.state.messages.length - 1].id + 1
       self.setState({messages: self.state.messages.concat(incommingMsg)})
+      if (incommingMsg.type === 'connection')
+        self.setState({userNumber: incommingMsg.users})
     }
     setTimeout(() => {
       console.log("Simulating incoming message");
 
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+      const newMessage = {id: this.state.messages[this.state.messages.length - 1].id + 1, username: "Michelle", content: "Hello there!", type: 'message'};
       const messages = this.state.messages.concat(newMessage)
 
       this.setState({messages: messages})
@@ -72,9 +73,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <nav className="navbar">
-          <a href="/" className="navbar-brand">Chatty</a>
-        </nav>
+        <Nav userNumber={this.state.userNumber} />
         <Messages messages={this.state.messages} />
         <Chatbar username={this.state.currentUser.name} submit={this.onReturn} submitName={this.onReturnName} />
       </div>

@@ -21,13 +21,23 @@ class Notification extends Component {
   }
 }
 
+class UserConnected extends Component {
+  render () {
+    return (
+      <div className="message system" key={this.props.message.id}>
+        <span>A user has {(this.props.message.direction === 'up') ? 'JOINED' : 'LEFT'} the chat</span>
+      </div>
+      )
+  }
+}
+
 class Messages extends Component {
   render() {
     return (
       <main className="messages">
         {this.props.messages.map(message => {
           return (
-            (message.type === 'notification') ? <Notification message={message}/> : <UserMessage message={message}/>
+            (message.type === 'notification') ? <Notification message={message}/> : ((message.type === 'message') ? <UserMessage message={message}/> : <UserConnected message={message}/> )
               //<div className="message" key={message.id}>
               //  <span className="message-username">{message.username}</span>
               //  <span className="message-content">{message.content}</span>
