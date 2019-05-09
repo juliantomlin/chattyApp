@@ -16,30 +16,46 @@ class App extends Component {
                       username: "Bob",
                       content: "Has anyone seen my marbles?",
                       id: 1,
+                      color: 'red'
                     },
                     {
                       type: 'message',
                       username: "Anonymous",
                       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good.",
                       id: 2,
+                      color: 'blue'
                     }
                   ]
                 }
 
   this.onReturn = this.onReturn.bind(this)
   this.onReturnName = this.onReturnName.bind(this)
+  this.colorSelector = this.colorSelector.bind(this)
   }
 
   onReturn(msg) {
     // this.setState({messages: this.state.messages.concat({username: this.state.currentUser.name, content: msg, id: this.state.messages[this.state.messages.length - 1].id + 1})})
-    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content}))
+    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content, color: this.state.currentUser.textColor}))
   }
 
   onReturnName(name) {
     if (name != this.state.currentUser.name){
-      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`}))
-      this.setState({currentUser: {name: name}})
+      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`, color: this.state.currentUser.textColor}))
+      this.setState({currentUser: {name: name, textColor: this.state.currentUser.textColor}})
     }
+  }
+
+  colorSelector() {
+    let ranNum = Math.random()
+    let color = 'purple'
+    if (ranNum < .25) {
+      color = 'green'
+    } else if (ranNum < .5){
+      color = 'red'
+    } else if (ranNum < .75){
+      color = 'blue'
+    }
+    return color
   }
 
 
@@ -51,6 +67,10 @@ class App extends Component {
     this.socket.onopen = function() {
       console.log('connection established')
     }
+
+    let color = this.colorSelector()
+
+    this.setState({currentUser: {name: "Bob", textColor: color}})
 
     const self = this;
     this.socket.onmessage = function(msg) {

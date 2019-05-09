@@ -4,17 +4,17 @@ class UserMessage extends Component {
   render() {
     return(
       <div className="message" key={this.props.message.id}>
-        <span className="message-username">{this.props.message.username}</span>
+        <span className={"message-username " + this.props.message.color}>{this.props.message.username}</span>
         <span className="message-content">{this.props.message.content}</span>
       </div>
     )
   }
 }
-//make notificaiton message
+
 class Notification extends Component {
   render() {
     return(
-      <div className="message system" key={this.props.message.id}>
+      <div className={"message system " + this.props.message.color} key={this.props.message.id}>
         <span>{this.props.message.content}</span>
       </div>
     )
