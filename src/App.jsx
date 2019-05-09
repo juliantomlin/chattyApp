@@ -33,8 +33,8 @@ class App extends Component {
 
   onReturn(msg) {
     // this.setState({messages: this.state.messages.concat({username: this.state.currentUser.name, content: msg, id: this.state.messages[this.state.messages.length - 1].id + 1})})
-    console.log(msg)
-    this.socket.send(JSON.stringify({username: this.state.currentUser.name, content: msg}))
+    console.log('retrived message', msg)
+    this.socket.send(JSON.stringify({username: msg.name, content: msg.content}))
   }
 
 // id: this.state.messages[this.state.messages.length - 1].id + 1
