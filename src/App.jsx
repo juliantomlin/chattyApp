@@ -10,22 +10,9 @@ class App extends Component {
     this.state = {
                   currentUser: {name: "Bob"},
                   userNumber: 0,
-                  messages: [
-                    {
-                      type: 'message',
-                      username: "Bob",
-                      content: "Has anyone seen my marbles?",
-                      id: 1,
-                      color: 'red'
-                    },
-                    {
-                      type: 'message',
-                      username: "Anonymous",
-                      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good.",
-                      id: 2,
-                      color: 'purple'
-                    }
-                  ]
+                  messages: [{username: "ADMIN",
+                              content: "WELCOME",
+                              id: 0}]
                 }
 
   this.onReturn = this.onReturn.bind(this)
@@ -34,18 +21,17 @@ class App extends Component {
   }
 
   onReturn(msg) {
-    // this.setState({messages: this.state.messages.concat({username: this.state.currentUser.name, content: msg, id: this.state.messages[this.state.messages.length - 1].id + 1})})
-    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content, color: this.state.currentUser.textColor}))
+    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content, color: this.state.currentUser.textColor}))     //sends raw message going out to the socket
   }
 
   onReturnName(name) {
     if (name != this.state.currentUser.name){
-      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`, color: this.state.currentUser.textColor}))
-      this.setState({currentUser: {name: name, textColor: this.state.currentUser.textColor}})
+      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`, color: this.state.currentUser.textColor}))   //sends notification of name change
+      this.setState({currentUser: {name: name, textColor: this.state.currentUser.textColor}})     // sets the users new name to the state
     }
   }
 
-  colorSelector() {
+  colorSelector() {                     //picks a random color for the user to have assigned to them
     let ranNum = Math.random()
     let color = 'purple'
     if (ranNum < .25) {
@@ -59,8 +45,6 @@ class App extends Component {
   }
 
 
-// id: this.state.messages[this.state.messages.length - 1].id + 1
-
   componentDidMount() {
     this.socket = new WebSocket("ws://localhost:8080");
     console.log("componentDidMount <App />");
@@ -70,24 +54,16 @@ class App extends Component {
 
     let color = this.colorSelector()
 
-    this.setState({currentUser: {name: "Bob", textColor: color}})
+    this.setState({currentUser: {name: "Anonymous", textColor: color}})
 
     const self = this;
-    this.socket.onmessage = function(msg) {
+    this.socket.onmessage = function(msg) {                                             //message comming in
       let incommingMsg = (JSON.parse(msg.data))
       incommingMsg.id = self.state.messages[self.state.messages.length - 1].id + 1
       self.setState({messages: self.state.messages.concat(incommingMsg)})
-      if (incommingMsg.type === 'connection')
+      if (incommingMsg.type === 'connection')                                           //updates number of connected users
         self.setState({userNumber: incommingMsg.users})
     }
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-
-      const newMessage = {id: this.state.messages[this.state.messages.length - 1].id + 1, username: "Michelle", content: "Hello there!", type: 'message'};
-      const messages = this.state.messages.concat(newMessage)
-
-      this.setState({messages: messages})
-    }, 3000);
   }
 
   render() {
@@ -100,4 +76,5 @@ class App extends Component {
     );
   }
 }
+
 export default App;

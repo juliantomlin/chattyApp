@@ -1,14 +1,10 @@
 import React, {Component} from 'react'
 
 
-// https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg
 
 function checkForImg(data) {
-  const imageStart = data.search(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/)
+  const imageStart = data.search(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/)                                  // if the text contains an image url, append image tags to it
   if (imageStart > -1) {
-    // const imageEnd = data.lastIndexOf(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/)
-    // console.log(imageEnd)
-    // const stringEnd = data.substring(imageEnd)
     const stringStart = data.substring(0,imageStart)
     let combinedString = data.replace(stringStart, `${stringStart}</span><br><img class="image" src="`)
     const stringEnd = data.replace(/^.*(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/, '')
@@ -25,7 +21,7 @@ function checkForImg(data) {
 }
 
 
-class UserMessage extends Component {
+class UserMessage extends Component {                                                             // message constructor, checks if there is an image in the text and prints out the correct path
   render() {
   let messageWithImage = checkForImg(this.props.message.content)
   const {didChange, message} = messageWithImage
@@ -66,13 +62,6 @@ class Messages extends Component {
         {this.props.messages.map(message => {
           return (
             (message.type === 'notification') ? <Notification message={message}/> : ((message.type === 'message') ? <UserMessage message={message}/> : <UserConnected message={message}/> )
-              //<div className="message" key={message.id}>
-              //  <span className="message-username">{message.username}</span>
-              //  <span className="message-content">{message.content}</span>
-              //</div>
-              //<div className="message system">
-              //  Anonymous1 changed their name to nomnom.
-              //</div>
             )
         })
       }

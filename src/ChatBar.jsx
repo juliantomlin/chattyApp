@@ -6,8 +6,8 @@ class Chatbar extends Component {
 
     this.state = {
       content:'',
-      name: 'Bob',
-      savedName: 'Bob'
+      name: 'Anonymous',
+      savedName: 'Anonymous'
     }
 
     this.onContent = this.onContent.bind(this)
@@ -33,7 +33,7 @@ class Chatbar extends Component {
     }
   }
 
-  resetName(event) {
+  resetName(event) {                        // if name is changed, but not submitted (enter pressed) it will revert back to the orignal name
     this.setState({
       name: this.state.savedName
     })
@@ -66,6 +66,3 @@ class Chatbar extends Component {
 }
 
 export default Chatbar
-
-
-
