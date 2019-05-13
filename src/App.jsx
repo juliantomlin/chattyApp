@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Chatbar from './ChatBar.jsx'
 import Messages from './Message.jsx'
 import Nav from './NavBar.jsx'
+const uuidv1 = require('uuid/v1');
 
 
 class App extends Component {
@@ -21,12 +22,14 @@ class App extends Component {
   }
 
   onReturn(msg) {
-    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content, color: this.state.currentUser.textColor}))     //sends raw message going out to the socket
+    const id = uuidv1()
+    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content, color: this.state.currentUser.textColor, id: id}))     //sends raw message going out to the socket
   }
 
   onReturnName(name) {
     if (name != this.state.currentUser.name){
-      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`, color: this.state.currentUser.textColor}))   //sends notification of name change
+      const id = uuidv1()
+      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`, color: this.state.currentUser.textColor, id: id}))   //sends notification of name change
       this.setState({currentUser: {name: name, textColor: this.state.currentUser.textColor}})     // sets the users new name to the state
     }
   }
@@ -59,7 +62,6 @@ class App extends Component {
     const self = this;
     this.socket.onmessage = function(msg) {                                             //message comming in
       let incommingMsg = (JSON.parse(msg.data))
-      incommingMsg.id = self.state.messages[self.state.messages.length - 1].id + 1
       self.setState({messages: self.state.messages.concat(incommingMsg)})
       if (incommingMsg.type === 'connection')                                           //updates number of connected users
         self.setState({userNumber: incommingMsg.users})
