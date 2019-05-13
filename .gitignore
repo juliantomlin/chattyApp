@@ -1,6 +1,8 @@
-node_modules
+client/node_modules
+socket_server/node_modules
 npm-debug.log
-.DS_Store
+client/.DS_Store
+socket_server/.DS_Store
 dist
 
 ### PhpStorm ###

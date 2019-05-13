@@ -2,34 +2,30 @@ import React, {Component} from 'react';
 import Chatbar from './ChatBar.jsx'
 import Messages from './Message.jsx'
 import Nav from './NavBar.jsx'
-const uuidv1 = require('uuid/v1');
-
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-                  currentUser: {name: "Bob"},
-                  userNumber: 0,
-                  messages: [{username: "ADMIN",
-                              content: "WELCOME",
-                              id: 0}]
-                }
+        currentUser: {name: "Bob"},
+        userNumber: 0,
+        messages: [
+          {username: "ADMIN",content: "WELCOME", id: 0}
+        ]
+      }
 
-  this.onReturn = this.onReturn.bind(this)
-  this.onReturnName = this.onReturnName.bind(this)
-  this.colorSelector = this.colorSelector.bind(this)
+    this.onReturn = this.onReturn.bind(this)
+    this.onReturnName = this.onReturnName.bind(this)
+    this.colorSelector = this.colorSelector.bind(this)
   }
 
   onReturn(msg) {
-    const id = uuidv1()
-    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content, color: this.state.currentUser.textColor, id: id}))     //sends raw message going out to the socket
+    this.socket.send(JSON.stringify({type: 'message', username: this.state.currentUser.name, content: msg.content, color: this.state.currentUser.textColor}))     //sends raw message going out to the socket
   }
 
   onReturnName(name) {
     if (name != this.state.currentUser.name){
-      const id = uuidv1()
-      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`, color: this.state.currentUser.textColor, id: id}))   //sends notification of name change
+      this.socket.send(JSON.stringify({type: 'notification', content: `${this.state.currentUser.name} has changed their name to ${name}.`, color: this.state.currentUser.textColor}))   //sends notification of name change
       this.setState({currentUser: {name: name, textColor: this.state.currentUser.textColor}})     // sets the users new name to the state
     }
   }

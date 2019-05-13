@@ -10,16 +10,23 @@ Clone the repository and create your own git repo.
 Install the dependencies and start the server and the socket server.
 
 ```
+cd client
 npm install
 npm start
-node Socket_server.js
-open http://localhost:3000
 ```
+then in another terminal window
+```
+cd socket_server
+npm install
+npm start
+```
+then open http://localhost:3000 in your browser
 
 ### Dependencies
 
 * "react": "15.4.2",
 * "react-dom": "15.4.2",
 * "ws": "7.0.0"
+* "uuid": "^3.3.2"
 
 !["Chatroom"](https://github.com/juliantomlin/chattyApp/blob/master/docs/ChatRoomPicture.png)
